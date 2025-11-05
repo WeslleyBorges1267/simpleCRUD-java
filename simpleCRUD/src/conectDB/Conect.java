@@ -10,7 +10,7 @@ import personalExceptions.DBException;
 
 public class Conect {
 	
-	private Connection conect;
+	protected Connection conect;
 	
 	private Properties props() {
 		Properties props = null;
@@ -27,7 +27,7 @@ public class Conect {
 		return props;
 	}
 	
-	public Connection startConnection() {
+	public void startConnection() {
 		try {
 			Properties props = this.props();
 			this.conect = DriverManager.getConnection(props.getProperty("url"), props);
@@ -36,9 +36,6 @@ public class Conect {
 			System.out.println("Erro ao conectar ao banco de dados:");
 			throw new DBException(e.getMessage());
 		}
-		
-		return this.conect;
-		
 	}
 	
 	public void closeConnection() {
