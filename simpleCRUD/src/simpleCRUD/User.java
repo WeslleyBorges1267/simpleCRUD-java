@@ -15,28 +15,37 @@ public class User extends Conect implements UserDAO{
 
     @Override
     public int insert(String name, String surname) {
-        if(this.conect != null){
-            String sqlCommand = "INSERT INTO users VALUES (default, ?, ?)";
-            try{
-                PreparedStatement ps = this.conect.prepareStatement(sqlCommand);
-                ps.setString(1, name);
-                ps.setString(2, surname);
-                return ps.executeUpdate();
-                
-            }catch(SQLException e) {
-                throw new DBException(e.getMessage());
-            }
-        }else{
-            System.out.println("Sem conexão com o banco de dados");
-            return 0;
+        // Comandos para inserção de dados no banco
+        String sqlCommand = "INSERT INTO users VALUES (default, ?, ?)";
+        try{
+            this.startConnection();
+            PreparedStatement ps = this.conect.prepareStatement(sqlCommand);
+            ps.setString(1, name);
+            ps.setString(2, surname);
+            return ps.executeUpdate();   
+        }catch(SQLException e) {
+            throw new DBException(e.getMessage());
+        }finally{
+            this.closeConnection();
         }
+
         //throw new UnsupportedOperationException("Unimplemented method 'insert'");
     }
     
     @Override
     public ResultSet getAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
+        
+        String sqlCommand = "SELECT * FROM users";
+        try{
+            this.startConnection();
+            Statement st = this.conect.createStatement();
+            ResultSet rs = st.executeQuery(sqlCommand);
+            return rs;
+        }catch(SQLException e){
+            throw new DBException(e.getMessage());
+        }finally{
+            this.closeConnection();
+        }
     }
 
     @Override
